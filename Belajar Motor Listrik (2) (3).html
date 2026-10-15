@@ -1,0 +1,832 @@
+<!doctype html><html><head><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#fff;color:#000}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style></head><body>
+<title>Belajar Motor Listrik</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@500;600;700&family=Barlow:wght@400;500;600&family=JetBrains+Mono:wght@500;700&display=swap">
+<style>
+/* Layout: sidebar stepper (tahap) + satu panel materi per tahap; di ponsel stepper menjadi baris di atas. */
+:root{
+  --bg:#edf1f2; --surface:#ffffff; --surface2:#f4f7f8; --ink:#13232b; --muted:#566a73; --line:#cfd9dd;
+  --teal:#0a6c74; --teal-ink:#ffffff; --teal-soft:#d6ecee; --volt:#d9520a; --volt-soft:#fde6d8;
+  --ok:#217a4b; --ok-soft:#d9f0e3; --bad:#b3261e; --bad-soft:#fbe0de;
+  --f-display:"Barlow Condensed","Arial Narrow",sans-serif; --f-body:"Barlow","Segoe UI",system-ui,sans-serif; --f-mono:"JetBrains Mono",ui-monospace,Consolas,monospace;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --bg:#0d171b; --surface:#152227; --surface2:#1b2b31; --ink:#e5eef1; --muted:#98abb3; --line:#2b3d44;
+  --teal:#52c4cb; --teal-ink:#06262a; --teal-soft:#16363b; --volt:#ff8c42; --volt-soft:#3a2415;
+  --ok:#5fd08f; --ok-soft:#163626; --bad:#ff8a80; --bad-soft:#3d1d1b; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#0d171b; --surface:#152227; --surface2:#1b2b31; --ink:#e5eef1; --muted:#98abb3; --line:#2b3d44;
+  --teal:#52c4cb; --teal-ink:#06262a; --teal-soft:#16363b; --volt:#ff8c42; --volt-soft:#3a2415;
+  --ok:#5fd08f; --ok-soft:#163626; --bad:#ff8a80; --bad-soft:#3d1d1b; color-scheme:dark}
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--ink);font-family:var(--f-body);font-size:16px;line-height:1.55;padding-inline:16px;padding-block:0 40px}
+h1,h2,h3{font-family:var(--f-display);font-weight:700;line-height:1.1;margin:0;text-wrap:balance;letter-spacing:.01em}
+h2{font-size:2rem} h3{font-size:1.35rem} p{margin:0}
+button{font:inherit;color:inherit;cursor:pointer}
+:focus-visible{outline:3px solid var(--volt);outline-offset:2px}
+.wrap{max-width:1180px;margin-inline:auto}
+header.top{display:flex;gap:16px;align-items:center;justify-content:space-between;flex-wrap:wrap;padding-block:18px 14px}
+.brand{display:flex;gap:12px;align-items:center}
+.brand svg{flex:none;width:44px;height:44px}
+[hidden]{display:none!important}
+.brand b{font-family:var(--f-display);font-size:1.6rem;font-weight:700;letter-spacing:.02em;display:block;line-height:1}
+.brand span{font-size:.82rem;color:var(--muted)}
+.overall{display:flex;align-items:center;gap:10px;font-family:var(--f-mono);font-size:.8rem;color:var(--muted)}
+.bar{width:160px;height:8px;background:var(--line);border-radius:99px;overflow:hidden}
+.bar i{display:block;height:100%;background:var(--teal);width:0;transition:width .4s}
+.app{display:grid;grid-template-columns:268px minmax(0,1fr);gap:24px;align-items:start}
+nav.steps{position:sticky;top:12px;display:flex;flex-direction:column;gap:6px}
+.step{display:grid;grid-template-columns:34px 1fr;gap:10px;align-items:center;text-align:left;background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:10px 12px;min-width:0}
+.step .n{width:34px;height:34px;border-radius:50%;display:grid;place-items:center;font-family:var(--f-mono);font-weight:700;border:2px solid var(--line);color:var(--muted)}
+.step b{display:block;font-family:var(--f-display);font-size:1.15rem;line-height:1.1}
+.step small{color:var(--muted);font-size:.78rem}
+.step[aria-current="step"]{border-color:var(--teal);box-shadow:0 0 0 1px var(--teal) inset}
+.step[aria-current="step"] .n{background:var(--teal);color:var(--teal-ink);border-color:var(--teal)}
+.step.done .n{background:var(--ok);border-color:var(--ok);color:#fff}
+.step.locked{opacity:.55;cursor:not-allowed}
+.phase{font-family:var(--f-mono);font-size:.68rem;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);margin:8px 2px 0}
+main{min-width:0}
+.panel{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:28px}
+.panel[hidden]{display:none}
+.kicker{font-family:var(--f-mono);font-size:.74rem;letter-spacing:.1em;text-transform:uppercase;color:var(--volt);margin-bottom:8px}
+.lead{color:var(--muted);max-width:68ch;margin-top:10px}
+.sec{margin-top:26px;display:flex;flex-direction:column;gap:12px}
+.cols{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:14px}
+.box{background:var(--surface2);border:1px solid var(--line);border-radius:10px;padding:16px;min-width:0}
+.box h3{margin-bottom:6px}
+.goal{display:flex;gap:10px}.goal i{flex:none;width:8px;height:8px;border-radius:50%;background:var(--volt);margin-top:9px}
+.chips{display:flex;flex-wrap:wrap;gap:8px}
+.chip{border:1.5px solid var(--line);background:var(--surface);border-radius:99px;padding:7px 16px;font-weight:600}
+.chip[aria-pressed="true"]{background:var(--teal);color:var(--teal-ink);border-color:var(--teal)}
+.chip.seen:not([aria-pressed="true"]){border-color:var(--ok);color:var(--ok)}
+.chain{display:flex;flex-wrap:wrap;gap:8px;align-items:stretch;list-style:none;margin:0;padding:0}
+.chain li{background:var(--surface);border:1px solid var(--line);border-radius:8px;padding:10px 12px;flex:1 1 150px;position:relative;font-size:.92rem;min-width:0}
+.chain li+li::before{content:"→";position:absolute;left:-14px;top:50%;transform:translateY(-50%);color:var(--volt);font-weight:700}
+.chain li+li{margin-left:10px}
+.tblwrap{overflow-x:auto;border:1px solid var(--line);border-radius:10px}
+table{border-collapse:collapse;width:100%;min-width:480px;font-size:.95rem}
+th,td{text-align:left;padding:10px 14px;border-bottom:1px solid var(--line)}
+th{background:var(--surface2);font-family:var(--f-display);font-size:1.05rem;letter-spacing:.03em}
+tr:last-child td{border-bottom:0}
+.btn{border:0;border-radius:8px;padding:11px 20px;font-weight:600;background:var(--teal);color:var(--teal-ink)}
+.btn.ghost{background:transparent;border:1.5px solid var(--line);color:var(--ink)}
+.btn.volt{background:var(--volt);color:#fff}
+.btn:disabled{opacity:.45;cursor:not-allowed}
+.foot{display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap;margin-top:30px;padding-top:18px;border-top:1px solid var(--line)}
+.status{font-family:var(--f-mono);font-size:.8rem;color:var(--muted)}
+.status.ok{color:var(--ok)}
+/* eksplorasi */
+.explore{display:grid;grid-template-columns:minmax(0,1.5fr) minmax(260px,1fr);gap:18px;align-items:start}
+.diagram{background:var(--surface2);border:1px solid var(--line);border-radius:12px;padding:8px;min-width:0}
+svg{display:block;width:100%;height:auto;max-width:100%}
+.hs{cursor:pointer}
+.hs .shape{fill:var(--surface);stroke:var(--ink);stroke-width:2;transition:fill .2s,stroke .2s}
+.hs:hover .shape{fill:var(--teal-soft)}
+.hs.sel .shape{fill:var(--teal-soft);stroke:var(--teal);stroke-width:3.5}
+.hs.seen .badge{fill:var(--ok)}
+.badge{fill:var(--volt)} .badge-t{fill:#fff;font:700 13px var(--f-mono);text-anchor:middle}
+.lbl{font:600 12px var(--f-body);fill:var(--ink);text-anchor:middle;pointer-events:none}
+.body-line{fill:none;stroke:var(--muted);stroke-width:2.5;stroke-dasharray:2 0}
+.wheel{fill:var(--surface);stroke:var(--ink);stroke-width:5}
+.pwr{fill:none;stroke:var(--volt);stroke-width:3;stroke-dasharray:7 5}
+.sig{fill:none;stroke:var(--teal);stroke-width:2.2;stroke-dasharray:3 4}
+.ground{stroke:var(--line);stroke-width:2}
+.info{position:sticky;top:12px;background:var(--surface);border:1px solid var(--line);border-top:4px solid var(--volt);border-radius:10px;padding:16px;display:flex;flex-direction:column;gap:10px;min-width:0}
+.info .tag{font-family:var(--f-mono);font-size:.72rem;color:var(--muted);text-transform:uppercase;letter-spacing:.08em}
+.info dl{margin:0;display:grid;gap:8px}.info dt{font-family:var(--f-mono);font-size:.7rem;text-transform:uppercase;letter-spacing:.08em;color:var(--teal)}
+.info dd{margin:0}
+.listbtns{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:8px;margin-top:12px}
+.lb{display:flex;gap:8px;align-items:center;border:1px solid var(--line);background:var(--surface);border-radius:8px;padding:8px 10px;text-align:left;min-width:0}
+.lb i{flex:none;width:24px;height:24px;border-radius:50%;background:var(--volt);color:#fff;display:grid;place-items:center;font:700 12px var(--f-mono);font-style:normal}
+.lb.seen i{background:var(--ok)} .lb[aria-pressed="true"]{border-color:var(--teal);box-shadow:0 0 0 1px var(--teal) inset}
+/* simulasi */
+.sim{display:grid;grid-template-columns:minmax(0,1.6fr) minmax(250px,1fr);gap:18px;align-items:start}
+.flow{fill:none;stroke:var(--line);stroke-width:4}
+.flow.on{stroke:var(--volt);stroke-dasharray:10 8;animation:dash var(--dur,1s) linear infinite}
+.flow.on.rev{animation-direction:reverse;stroke:var(--ok)}
+.flow.sg.on{stroke:var(--teal)}
+@keyframes dash{to{stroke-dashoffset:-36}}
+.node rect{fill:var(--surface);stroke:var(--ink);stroke-width:2}
+.node text{font:600 13px var(--f-body);fill:var(--ink);text-anchor:middle}
+.node.hot rect{stroke:var(--volt);stroke-width:3.5}
+.ctl{display:flex;flex-direction:column;gap:14px}
+.sw{display:flex;align-items:center;justify-content:space-between;gap:10px}
+.toggle{border:2px solid var(--line);border-radius:99px;padding:6px 16px;font-weight:600;background:var(--surface2);min-width:96px}
+.toggle[aria-pressed="true"]{background:var(--ok);border-color:var(--ok);color:#fff}
+input[type=range]{width:100%;accent-color:var(--volt)}
+.read{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.read div{background:var(--surface2);border:1px solid var(--line);border-radius:8px;padding:8px 10px}
+.read small{display:block;color:var(--muted);font-size:.72rem;font-family:var(--f-mono);text-transform:uppercase;letter-spacing:.06em}
+.read b{font-family:var(--f-mono);font-size:1.25rem;font-variant-numeric:tabular-nums}
+.soc{height:14px;background:var(--line);border-radius:99px;overflow:hidden}.soc i{display:block;height:100%;background:var(--ok);width:80%;transition:width .1s,background .2s}
+.msg{min-height:3.2em;background:var(--surface2);border-left:4px solid var(--teal);border-radius:6px;padding:8px 12px;font-size:.92rem}
+.msg.warn{border-color:var(--volt);background:var(--volt-soft)}
+.tasks{list-style:none;padding:0;margin:0;display:grid;gap:6px}
+.tasks li{display:flex;gap:10px;align-items:center;font-size:.93rem}
+.tasks li::before{content:"";flex:none;width:18px;height:18px;border-radius:50%;border:2px solid var(--line)}
+.tasks li.ok::before{background:var(--ok);border-color:var(--ok);box-shadow:inset 0 0 0 3px var(--surface)}
+.tasks li.ok{color:var(--ok)}
+/* praktik */
+.sop{display:grid;gap:8px;list-style:none;padding:0;margin:0}
+.sop button{width:100%;text-align:left;background:var(--surface2);border:1.5px solid var(--line);border-radius:8px;padding:10px 14px}
+.sop button.placed{background:var(--ok-soft);border-color:var(--ok);cursor:default}
+.sop button.shake{animation:shake .35s;border-color:var(--bad);background:var(--bad-soft)}
+@keyframes shake{25%{transform:translateX(-6px)}75%{transform:translateX(6px)}}
+.sop .no{font-family:var(--f-mono);font-weight:700;display:inline-block;min-width:1.8em;color:var(--ok)}
+.wnode rect{fill:var(--surface);stroke:var(--ink);stroke-width:2;cursor:pointer}
+.wnode text{font:600 14px var(--f-body);fill:var(--ink);text-anchor:middle;pointer-events:none}
+.wnode.pick rect{stroke:var(--volt);stroke-width:4;fill:var(--volt-soft)}
+.wnode:hover rect{fill:var(--teal-soft)}
+.wire{stroke:var(--ok);stroke-width:4;fill:none}
+.wire.s{stroke-dasharray:5 5}
+.hint{background:var(--surface2);border-radius:8px;padding:10px 14px;font-size:.92rem;border-left:4px solid var(--teal)}
+.note{font-size:.84rem;color:var(--muted)}
+/* presentasi */
+.fields{display:grid;gap:16px}
+label.f{display:grid;gap:6px;font-weight:600}
+label.f span small{font-weight:400;color:var(--muted)}
+textarea{font:inherit;color:var(--ink);background:var(--surface2);border:1.5px solid var(--line);border-radius:8px;padding:10px 12px;min-height:84px;resize:vertical;width:100%}
+/* kuis */
+.q-opts{display:grid;gap:8px}
+.opt{text-align:left;background:var(--surface2);border:1.5px solid var(--line);border-radius:8px;padding:12px 14px}
+.opt:hover:not(:disabled){border-color:var(--teal)}
+.opt.right{background:var(--ok-soft);border-color:var(--ok)} .opt.wrong{background:var(--bad-soft);border-color:var(--bad)}
+.qmeta{font-family:var(--f-mono);font-size:.8rem;color:var(--muted)}
+.score{font-family:var(--f-display);font-size:4rem;line-height:1;color:var(--teal)}
+.rate{display:flex;gap:6px;flex-wrap:wrap}
+.rate button{width:44px;height:44px;border-radius:8px;border:1.5px solid var(--line);background:var(--surface2);font-family:var(--f-mono);font-weight:700}
+.rate button[aria-pressed="true"]{background:var(--teal);color:var(--teal-ink);border-color:var(--teal)}
+.toast{position:fixed;left:50%;bottom:calc(20px + env(safe-area-inset-bottom,0px));transform:translate(-50%,30px);background:var(--ink);color:var(--bg);padding:10px 18px;border-radius:99px;font-weight:600;opacity:0;pointer-events:none;transition:.3s;z-index:9;max-width:calc(100vw - 32px);text-align:center}
+.toast.show{opacity:1;transform:translate(-50%,0)}
+footer.bt{margin-top:26px;display:flex;gap:14px;flex-wrap:wrap;align-items:center;justify-content:space-between;color:var(--muted);font-size:.85rem}
+footer .acts{display:flex;gap:8px;flex-wrap:wrap}
+footer .btn{padding:6px 12px;font-size:.82rem}
+
+.defs{position:absolute;width:0;height:0;overflow:hidden}
+.ic-t{font:700 11px var(--f-mono);fill:var(--ink);text-anchor:middle}
+.ico{width:100%;height:auto;background:var(--surface2);border-radius:8px}
+.listbtns{grid-template-columns:repeat(auto-fit,minmax(150px,1fr))}
+.lb{flex-direction:column;align-items:stretch;gap:6px;padding:10px;text-align:center}
+.lb .nm{display:flex;gap:8px;align-items:center;justify-content:center;font-weight:600;font-size:.92rem}
+.big{background:var(--surface2);border:1px solid var(--line);border-radius:10px;padding:10px;width:100%;max-height:210px}
+.who{display:flex;gap:10px;align-items:center;flex-wrap:wrap;font-size:.9rem}
+.who b{font-family:var(--f-display);font-size:1.15rem}
+.who .btn{padding:5px 12px;font-size:.82rem}
+.wnode use{pointer-events:none}
+.cover{background:var(--surface);border:1px solid var(--line);border-top:6px solid var(--teal);border-radius:14px;padding:clamp(20px,4vw,44px);margin-top:10px}
+.cover[hidden]{display:none}
+.cover-grid{display:grid;grid-template-columns:minmax(0,1.1fr) minmax(0,1fr);gap:clamp(20px,4vw,48px);align-items:center}
+.cover h1{font-size:clamp(2.3rem,5.2vw,3.7rem);margin:6px 0 14px}
+.startform{display:grid;gap:14px;margin-top:22px;max-width:440px}
+input[type=text]{font:inherit;color:var(--ink);background:var(--surface2);border:1.5px solid var(--line);border-radius:8px;padding:12px 14px;width:100%}
+.btn.big{padding:14px 22px;font-size:1.05rem}
+.gal6{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}
+.gal6 div{background:var(--surface2);border:1px solid var(--line);border-radius:10px;padding:8px;text-align:center;font-weight:600;font-size:.85rem}
+.gal6 .ico{background:var(--surface)}
+.strip{list-style:none;padding:0;margin:30px 0 0;display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:10px;counter-reset:s}
+.strip li{border-top:3px solid var(--teal);padding-top:8px;font-size:.9rem;color:var(--muted);counter-increment:s}
+.strip li b{display:block;font-family:var(--f-display);font-size:1.15rem;color:var(--ink)}
+.strip li b::before{content:"Tahap " counter(s) " · ";color:var(--volt)}
+@media (max-width:860px){.cover-grid{grid-template-columns:minmax(0,1fr)}}
+.sim{grid-template-columns:minmax(0,1fr)}
+.ctl{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:16px;align-items:start}
+.ctl .msg,.ctl .read{align-self:stretch}
+@media (max-width:860px){
+  .app{grid-template-columns:minmax(0,1fr)}
+  nav.steps{position:static;flex-direction:row;overflow-x:auto;padding-bottom:6px;gap:8px;scroll-snap-type:x proximity}
+  .phase{display:none}
+  .step{flex:0 0 auto;grid-template-columns:30px auto;scroll-snap-align:start}
+  .step small{display:none}.step .n{width:30px;height:30px}
+  .explore,.sim{grid-template-columns:minmax(0,1fr)}
+  .info{position:static}
+  .panel{padding:20px 16px}
+  h2{font-size:1.7rem}
+  .chain li+li{margin-left:0}.chain li+li::before{content:"↓";left:50%;top:-14px;transform:translateX(-50%)}
+}
+@media (max-width:600px){.diagram{overflow-x:auto}.diagram svg{min-width:560px}}
+@media (prefers-reduced-motion:reduce){.flow.on{animation:none}.toast,.bar i{transition:none}.sop button.shake{animation:none}}
+</style>
+
+<div class="wrap">
+<svg class="defs" aria-hidden="true" focusable="false"><defs>
+<linearGradient id="gDk" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#4c5c64"/><stop offset="1" stop-color="#1d282e"/></linearGradient>
+<linearGradient id="gMt" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#f6f9fa"/><stop offset=".45" stop-color="#c0cad0"/><stop offset=".55" stop-color="#8f9ba2"/><stop offset="1" stop-color="#dbe2e5"/></linearGradient>
+<linearGradient id="gRub" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#55656d"/><stop offset=".5" stop-color="#2a363c"/><stop offset="1" stop-color="#151d21"/></linearGradient>
+<linearGradient id="gPcb" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#23995a"/><stop offset="1" stop-color="#12673a"/></linearGradient>
+<radialGradient id="gRad" cx=".38" cy=".32" r=".8"><stop offset="0" stop-color="#ffffff"/><stop offset=".5" stop-color="#c9d2d7"/><stop offset="1" stop-color="#818e95"/></radialGradient>
+
+<symbol id="ic-baterai" viewBox="0 0 120 90">
+ <ellipse cx="60" cy="85" rx="50" ry="3.5" fill="#000" opacity=".18"/>
+ <polygon points="12,38 32,26 108,26 88,38" fill="#74868f" stroke="#1c2a30" stroke-width="1.4" stroke-linejoin="round"/>
+ <polygon points="88,38 108,26 108,66 88,78" fill="#18242a" stroke="#1c2a30" stroke-width="1.4" stroke-linejoin="round"/>
+ <path d="M92 48l12-7M92 56l12-7M92 64l12-7" stroke="#3d4f58" stroke-width="1.2"/>
+ <rect x="12" y="38" width="76" height="40" rx="2" fill="url(#gDk)" stroke="#1c2a30" stroke-width="1.4"/>
+ <rect x="19" y="44" width="62" height="28" rx="2" fill="#f3f6f7"/>
+ <rect x="19" y="44" width="62" height="8" rx="2" fill="#1f6fb2"/>
+ <text x="50" y="50.2" font-size="5" font-weight="700" fill="#fff" text-anchor="middle" font-family="sans-serif">Li-ion BATTERY</text>
+ <text x="50" y="63" font-size="11" font-weight="800" fill="#14232b" text-anchor="middle" font-family="sans-serif">48 V</text>
+ <text x="50" y="69.5" font-size="5.2" fill="#455a64" text-anchor="middle" font-family="sans-serif">20 Ah · 960 Wh</text>
+ <path d="M46 31C46 19 34 15 22 12" stroke="#d32f2f" stroke-width="3.4" fill="none" stroke-linecap="round"/>
+ <path d="M72 31C72 19 84 15 98 12" stroke="#263238" stroke-width="3.4" fill="none" stroke-linecap="round"/>
+ <ellipse cx="46" cy="32" rx="6" ry="2.6" fill="#d32f2f" stroke="#1c2a30" stroke-width="1"/><ellipse cx="46" cy="30.8" rx="3" ry="1.2" fill="#8f1b1b"/>
+ <ellipse cx="72" cy="32" rx="6" ry="2.6" fill="#455a64" stroke="#1c2a30" stroke-width="1"/><ellipse cx="72" cy="30.8" rx="3" ry="1.2" fill="#1d282e"/>
+ <text x="17" y="9" font-size="10" font-weight="800" fill="#d32f2f" font-family="sans-serif">+</text><text x="100" y="9" font-size="10" font-weight="800" fill="var(--ink)" font-family="sans-serif">−</text>
+</symbol>
+
+<symbol id="ic-motor" viewBox="0 0 120 90">
+ <ellipse cx="60" cy="86.5" rx="36" ry="2.8" fill="#000" opacity=".16"/>
+ <g transform="translate(60 44)">
+  <circle r="42" fill="#1b2328"/>
+  <circle r="40" fill="none" stroke="#46535a" stroke-width="3" stroke-dasharray="3.2 2.4"/>
+  <circle r="35" fill="url(#gRad)" stroke="#1c2a30" stroke-width="1.3"/>
+  <circle r="31" fill="#27333a"/>
+  <circle r="29" fill="url(#gRad)" stroke="#1c2a30" stroke-width="1.5"/>
+  <circle r="22" fill="none" stroke="#7d8a91" stroke-width="1"/><circle r="16" fill="none" stroke="#7d8a91" stroke-width="1"/>
+  <circle cx="0" cy="-25.5" r="2.3" fill="#5b6870" stroke="#1c2a30" stroke-width=".6"/><circle cx="22.1" cy="-12.75" r="2.3" fill="#5b6870" stroke="#1c2a30" stroke-width=".6"/><circle cx="22.1" cy="12.75" r="2.3" fill="#5b6870" stroke="#1c2a30" stroke-width=".6"/><circle cx="0" cy="25.5" r="2.3" fill="#5b6870" stroke="#1c2a30" stroke-width=".6"/><circle cx="-22.1" cy="12.75" r="2.3" fill="#5b6870" stroke="#1c2a30" stroke-width=".6"/><circle cx="-22.1" cy="-12.75" r="2.3" fill="#5b6870" stroke="#1c2a30" stroke-width=".6"/>
+  <circle r="9.5" fill="url(#gRad)" stroke="#1c2a30" stroke-width="1"/>
+  <polygon points="0,-6.2 5.4,-3.1 5.4,3.1 0,6.2 -5.4,3.1 -5.4,-3.1" fill="#9aa7ad" stroke="#1c2a30" stroke-width=".9"/><circle r="2" fill="#27333a"/>
+ </g>
+ <path d="M61 50C62 66 84 70 108 76" stroke="#fbc02d" stroke-width="2.6" fill="none" stroke-linecap="round"/>
+ <path d="M60 52C62 70 84 74 108 80" stroke="#2e9d4f" stroke-width="2.6" fill="none" stroke-linecap="round"/>
+ <path d="M59 54C61 74 84 78 108 84" stroke="#1e78d6" stroke-width="2.6" fill="none" stroke-linecap="round"/>
+</symbol>
+
+<symbol id="ic-controller" viewBox="0 0 120 90">
+ <ellipse cx="60" cy="85" rx="46" ry="3" fill="#000" opacity=".16"/>
+ <rect x="22.0" y="13" width="4.2" height="15" rx="1" fill="url(#gMt)" stroke="#1c2a30" stroke-width=".6"/><rect x="31.5" y="13" width="4.2" height="15" rx="1" fill="url(#gMt)" stroke="#1c2a30" stroke-width=".6"/><rect x="41.0" y="13" width="4.2" height="15" rx="1" fill="url(#gMt)" stroke="#1c2a30" stroke-width=".6"/><rect x="50.5" y="13" width="4.2" height="15" rx="1" fill="url(#gMt)" stroke="#1c2a30" stroke-width=".6"/><rect x="60.0" y="13" width="4.2" height="15" rx="1" fill="url(#gMt)" stroke="#1c2a30" stroke-width=".6"/><rect x="69.5" y="13" width="4.2" height="15" rx="1" fill="url(#gMt)" stroke="#1c2a30" stroke-width=".6"/><rect x="79.0" y="13" width="4.2" height="15" rx="1" fill="url(#gMt)" stroke="#1c2a30" stroke-width=".6"/><rect x="88.5" y="13" width="4.2" height="15" rx="1" fill="url(#gMt)" stroke="#1c2a30" stroke-width=".6"/>
+ <rect x="16" y="26" width="88" height="52" rx="5" fill="url(#gMt)" stroke="#1c2a30" stroke-width="1.6"/>
+ <path d="M22 33h76M22 38h76" stroke="#8d999f" stroke-width="1"/>
+ <rect x="24" y="45" width="48" height="22" rx="2" fill="#1f2a30"/>
+ <text x="48" y="53.5" font-size="6" font-weight="800" fill="#fff" text-anchor="middle" font-family="sans-serif">CONTROLLER</text>
+ <text x="48" y="61.5" font-size="5" fill="#9fd3e6" text-anchor="middle" font-family="sans-serif">48 V · 30 A · BLDC</text>
+ <circle cx="82" cy="52" r="2.6" fill="#43d17a"/>
+ <rect x="76" y="61" width="20" height="11" rx="1.5" fill="#f1f1f1" stroke="#1c2a30" stroke-width=".9"/><path d="M80 64v5M84 64v5M88 64v5M92 64v5" stroke="#9aa7ad" stroke-width="1.4"/>
+ <path d="M16 42H3" stroke="#d32f2f" stroke-width="5" stroke-linecap="round"/><path d="M16 60H3" stroke="#263238" stroke-width="5" stroke-linecap="round"/>
+ <path d="M104 38h13" stroke="#fbc02d" stroke-width="4.6" stroke-linecap="round"/><path d="M104 51h13" stroke="#2e9d4f" stroke-width="4.6" stroke-linecap="round"/><path d="M104 64h13" stroke="#1e78d6" stroke-width="4.6" stroke-linecap="round"/>
+</symbol>
+
+<symbol id="ic-throttle" viewBox="0 0 120 90">
+ <rect x="1" y="41" width="64" height="10" rx="5" fill="url(#gMt)" stroke="#1c2a30" stroke-width="1"/>
+ <rect x="40" y="29" width="25" height="34" rx="5" fill="url(#gDk)" stroke="#1c2a30" stroke-width="1.3"/>
+ <circle cx="46" cy="35" r="1.8" fill="#9aa7ad"/><circle cx="59" cy="35" r="1.8" fill="#9aa7ad"/><circle cx="46" cy="57" r="1.8" fill="#9aa7ad"/><circle cx="59" cy="57" r="1.8" fill="#9aa7ad"/>
+ <rect x="65" y="31" width="51" height="30" rx="14" fill="url(#gRub)" stroke="#1c2a30" stroke-width="1.3"/>
+ <path d="M74 35V57" stroke="#55666f" stroke-width="1.8" stroke-linecap="round"/><path d="M81 35V57" stroke="#55666f" stroke-width="1.8" stroke-linecap="round"/><path d="M88 35V57" stroke="#55666f" stroke-width="1.8" stroke-linecap="round"/><path d="M95 35V57" stroke="#55666f" stroke-width="1.8" stroke-linecap="round"/><path d="M102 35V57" stroke="#55666f" stroke-width="1.8" stroke-linecap="round"/>
+ <path d="M68 22Q92 5 113 22" stroke="#e8590c" stroke-width="3.2" fill="none" stroke-linecap="round"/><path d="M115 23l-11-1 4 9z" fill="#e8590c"/>
+ <path d="M46 63V70H26" stroke="#d32f2f" stroke-width="2.4" fill="none"/><path d="M50 63V74H26" stroke="#263238" stroke-width="2.4" fill="none"/><path d="M54 63V78H26" stroke="#2e9d4f" stroke-width="2.4" fill="none"/>
+ <rect x="12" y="67" width="14" height="14" rx="2" fill="#f1f1f1" stroke="#1c2a30" stroke-width="1"/><path d="M16 71v6M19 71v6M22 71v6" stroke="#9aa7ad" stroke-width="1.3"/>
+</symbol>
+
+<symbol id="ic-charger" viewBox="0 0 120 90">
+ <ellipse cx="60" cy="82" rx="48" ry="3" fill="#000" opacity=".16"/>
+ <path d="M36 44H24" stroke="#263238" stroke-width="3.2"/>
+ <rect x="5" y="34" width="20" height="20" rx="3.5" fill="#e9edef" stroke="#1c2a30" stroke-width="1.3"/>
+ <rect x="0.5" y="39" width="6" height="2.6" fill="#b0bcc2" stroke="#1c2a30" stroke-width=".6"/><rect x="0.5" y="46.5" width="6" height="2.6" fill="#b0bcc2" stroke="#1c2a30" stroke-width=".6"/>
+ <rect x="36" y="20" width="52" height="48" rx="5" fill="url(#gDk)" stroke="#1c2a30" stroke-width="1.4"/>
+ <path d="M42 26h40M42 29h40" stroke="#2b373d" stroke-width="1"/>
+ <circle cx="49" cy="36" r="2.7" fill="#43d17a"/><circle cx="58" cy="36" r="2.7" fill="#e53935" opacity=".45"/>
+ <rect x="42" y="42" width="40" height="21" rx="2" fill="#e7ecee"/>
+ <text x="62" y="50" font-size="6" font-weight="800" fill="#14232b" text-anchor="middle" font-family="sans-serif">CHARGER</text>
+ <text x="62" y="58" font-size="5.2" fill="#455a64" text-anchor="middle" font-family="sans-serif">54.6 V · 5 A</text>
+ <path d="M88 44C100 44 98 62 106 62" stroke="#263238" stroke-width="3.4" fill="none" stroke-linecap="round"/>
+ <rect x="104" y="54" width="15" height="16" rx="3.5" fill="#37474f" stroke="#1c2a30" stroke-width="1.1"/><circle cx="111.5" cy="62" r="4" fill="#b0bcc2" stroke="#1c2a30" stroke-width=".7"/><circle cx="111.5" cy="62" r="1.6" fill="#263238"/>
+</symbol>
+
+<symbol id="ic-bms" viewBox="0 0 120 90">
+ <ellipse cx="60" cy="86" rx="48" ry="2.6" fill="#000" opacity=".16"/>
+ <rect x="16" y="6" width="62" height="14" rx="1.5" fill="#f3f3f3" stroke="#1c2a30" stroke-width="1"/><rect x="23" y="12" width="3" height="6" fill="#c9a227"/><rect x="29" y="12" width="3" height="6" fill="#c9a227"/><rect x="35" y="12" width="3" height="6" fill="#c9a227"/><rect x="41" y="12" width="3" height="6" fill="#c9a227"/><rect x="47" y="12" width="3" height="6" fill="#c9a227"/><rect x="53" y="12" width="3" height="6" fill="#c9a227"/><rect x="59" y="12" width="3" height="6" fill="#c9a227"/><rect x="65" y="12" width="3" height="6" fill="#c9a227"/><rect x="71" y="12" width="3" height="6" fill="#c9a227"/>
+ <rect x="8" y="19" width="104" height="62" rx="3.5" fill="url(#gPcb)" stroke="#1c2a30" stroke-width="1.5"/>
+ <circle cx="14" cy="25" r="2.2" fill="#d9e2e5" stroke="#1c2a30" stroke-width=".6"/><circle cx="106" cy="25" r="2.2" fill="#d9e2e5" stroke="#1c2a30" stroke-width=".6"/><circle cx="14" cy="75" r="2.2" fill="#d9e2e5" stroke="#1c2a30" stroke-width=".6"/><circle cx="106" cy="75" r="2.2" fill="#d9e2e5" stroke="#1c2a30" stroke-width=".6"/>
+ <rect x="38" y="28" width="28" height="19" rx="1.5" fill="#141b1f"/><path d="M41 28v-3M46 28v-3M51 28v-3M56 28v-3M61 28v-3M41 47v3M46 47v3M51 47v3M56 47v3M61 47v3" stroke="#c9d2d7" stroke-width="1.4"/>
+ <circle cx="86" cy="38" r="6" fill="#cfd8dc" stroke="#1c2a30" stroke-width="1"/><circle cx="86" cy="38" r="3.2" fill="#37474f"/><circle cx="100" cy="38" r="5" fill="#cfd8dc" stroke="#1c2a30" stroke-width="1"/><circle cx="100" cy="38" r="2.6" fill="#37474f"/>
+ <rect x="14.0" y="58" width="8" height="12" fill="#141b1f"/><rect x="14.5" y="55" width="7" height="4" fill="#b9c3c9"/><rect x="24.5" y="58" width="8" height="12" fill="#141b1f"/><rect x="25.0" y="55" width="7" height="4" fill="#b9c3c9"/><rect x="35.0" y="58" width="8" height="12" fill="#141b1f"/><rect x="35.5" y="55" width="7" height="4" fill="#b9c3c9"/><rect x="45.5" y="58" width="8" height="12" fill="#141b1f"/><rect x="46.0" y="55" width="7" height="4" fill="#b9c3c9"/><rect x="56.0" y="58" width="8" height="12" fill="#141b1f"/><rect x="56.5" y="55" width="7" height="4" fill="#b9c3c9"/>
+ <path d="M14 53H34M70 40H78M66 38H80M14 76H100" stroke="#e2c15d" stroke-width="1.6" fill="none"/>
+ <text x="85" y="72" font-size="9" font-weight="800" fill="#e8f5e9" text-anchor="middle" font-family="sans-serif">BMS</text>
+ <path d="M8 62H0" stroke="#d32f2f" stroke-width="4" stroke-linecap="round"/><path d="M8 72H0" stroke="#263238" stroke-width="4" stroke-linecap="round"/>
+</symbol>
+</defs></svg>
+<header class="top">
+  <div class="brand">
+    <svg width="44" height="44" viewBox="0 0 44 44" aria-hidden="true"><rect width="44" height="44" rx="10" fill="var(--teal)"/><path d="M25 6 12 25h9l-2 13 13-19h-9z" fill="var(--teal-ink)"/></svg>
+    <div><b>Belajar Motor Listrik</b><span>Media pembelajaran untuk siswa TKR · Konversi Energi Kendaraan Ringan</span></div>
+  </div>
+  <div class="who" id="who" hidden><span id="whoTxt"></span><button class="btn ghost" id="toCover" type="button">Sampul</button></div>
+  <div class="overall" aria-live="polite"><span id="ovtxt">0 / 6 tahap</span><div class="bar"><i id="ovbar"></i></div></div>
+</header>
+
+<section class="cover" id="cover" hidden>
+  <div class="cover-grid">
+    <div>
+      <div class="kicker">Media pembelajaran · Konversi Energi Kendaraan Ringan</div>
+      <h1>Selamat datang di pembelajaran kendaraan motor listrik</h1>
+      <p class="lead">Untuk siswa TKR (Teknik Kendaraan Ringan). Dalam 6 tahap kamu akan mengenal komponen, memahami alur energi, berlatih kerja aman, lalu menguji pemahamanmu.</p>
+      <form class="startform" id="startForm" novalidate>
+        <label class="f" for="studentName"><span>Nama siswa</span><input id="studentName" type="text" maxlength="60" autocomplete="name" placeholder="Tulis namamu di sini"></label>
+        <label class="f" for="studentClass"><span>Kelas <small>(boleh dikosongkan)</small></span><input id="studentClass" type="text" maxlength="40" placeholder="Contoh: XI TKR 1"></label>
+        <div style="display:flex;gap:12px;align-items:center;flex-wrap:wrap"><button class="btn volt big" id="startBtn" type="submit" disabled>Mulai belajar</button><span class="note" id="startNote">Isi nama untuk memulai.</span></div>
+      </form>
+    </div>
+    <div>
+      <div class="gal6" aria-label="Enam komponen yang akan dipelajari"><div><svg class="ico" viewBox="0 0 120 90" aria-hidden="true"><use href="#ic-baterai"/></svg>Baterai</div><div><svg class="ico" viewBox="0 0 120 90" aria-hidden="true"><use href="#ic-motor"/></svg>Motor BLDC</div><div><svg class="ico" viewBox="0 0 120 90" aria-hidden="true"><use href="#ic-controller"/></svg>Controller</div><div><svg class="ico" viewBox="0 0 120 90" aria-hidden="true"><use href="#ic-throttle"/></svg>Throttle</div><div><svg class="ico" viewBox="0 0 120 90" aria-hidden="true"><use href="#ic-charger"/></svg>Charger</div><div><svg class="ico" viewBox="0 0 120 90" aria-hidden="true"><use href="#ic-bms"/></svg>BMS</div></div>
+    </div>
+  </div>
+  <ol class="strip">
+    <li><b>Pendahuluan</b>Mengapa motor listrik</li><li><b>Eksplorasi</b>Enam komponen utama</li><li><b>Alur daya</b>Simulasi aliran energi</li><li><b>Praktik virtual</b>Kerja aman dan rangkaian</li><li><b>Presentasi</b>Jelaskan hasil belajarmu</li><li><b>Evaluasi</b>Kuis dan penilaian diri</li>
+  </ol>
+</section>
+
+<div class="app" id="app">
+<nav class="steps" id="steps" aria-label="Tahap belajar"></nav>
+
+<main>
+<!-- TAHAP 1 -->
+<section class="panel" id="p1" data-stage="1">
+  <div class="kicker">Tahap 1 · Pendahuluan</div>
+  <h2>Mengapa kita belajar motor listrik?</h2>
+  <p class="lead">Industri otomotif bergerak ke arah elektrifikasi. Pemerintah mendorong konversi sepeda motor bensin menjadi motor listrik, dengan target 6 juta unit pada tahun 2030. Lulusan TKR perlu paham kendaraan konvensional dan juga kendaraan listrik.</p>
+
+  <div class="sec">
+    <h3>Tujuan belajar</h3>
+    <div class="cols">
+      <div class="goal"><i></i><p>Menyebutkan jenis sumber energi kendaraan: bensin, diesel, listrik, dan hybrid.</p></div>
+      <div class="goal"><i></i><p>Mengenali 6 komponen utama motor listrik dan fungsinya.</p></div>
+      <div class="goal"><i></i><p>Menjelaskan alur energi dari baterai sampai roda.</p></div>
+      <div class="goal"><i></i><p>Menerapkan urutan kerja aman pada sistem bertegangan tinggi.</p></div>
+    </div>
+  </div>
+
+  <div class="sec">
+    <h3>Konversi energi: pilih satu jenis dan lihat alurnya</h3>
+    <div class="chips" id="energyChips" role="group" aria-label="Jenis energi"></div>
+    <div class="box" id="energyBox" aria-live="polite"></div>
+    <div class="status" id="s1status"></div>
+  </div>
+
+  <div class="sec">
+    <h3>Padanan komponen: kendaraan bensin dan kendaraan listrik</h3>
+    <div class="tblwrap"><table>
+      <thead><tr><th>Kendaraan bensin</th><th>Kendaraan listrik</th><th>Kesamaan fungsi</th></tr></thead>
+      <tbody>
+        <tr><td>Tangki bahan bakar</td><td>Baterai</td><td>Menyimpan energi</td></tr>
+        <tr><td>Mesin pembakaran</td><td>Motor listrik (BLDC)</td><td>Menghasilkan putaran penggerak roda</td></tr>
+        <tr><td>Injeksi bahan bakar dan ECU</td><td>Controller</td><td>Mengatur tenaga yang dikirim ke penggerak</td></tr>
+        <tr><td>Kabel gas / pedal gas</td><td>Throttle elektronik</td><td>Permintaan pengemudi untuk tenaga</td></tr>
+        <tr><td>Pengisian di SPBU</td><td>Charger</td><td>Mengisi ulang sumber energi</td></tr>
+        <tr><td>Tidak ada padanan langsung</td><td>BMS</td><td>Menjaga keamanan baterai</td></tr>
+      </tbody></table></div>
+  </div>
+  <div class="foot"><span class="status" id="f1"></span><button class="btn" data-next="2">Lanjut ke Tahap 2</button></div>
+</section>
+
+<!-- TAHAP 2 -->
+<section class="panel" id="p2" data-stage="2" hidden>
+  <div class="kicker">Tahap 2 · Eksplorasi</div>
+  <h2>Kenali komponen utama</h2>
+  <p class="lead">Gambar ini seperti trainer dengan panel transparan: semua komponen terlihat dari luar. Klik tiap nomor untuk membaca fungsinya. Buka keenam komponen untuk menyelesaikan tahap ini.</p>
+  <div class="sec">
+    <div class="explore">
+      <div>
+        <div class="diagram">
+          <svg viewBox="0 0 720 330" role="group" aria-label="Diagram komponen sepeda motor listrik">
+            <line class="ground" x1="10" y1="274" x2="710" y2="274"/>
+            <!-- roda -->
+            <circle class="wheel" cx="130" cy="222" r="52"/><circle cx="130" cy="222" r="6" fill="var(--ink)"/>
+            <circle class="wheel" cx="520" cy="222" r="52"/>
+            <!-- rangka & bodi panel transparan -->
+            <path class="body-line" d="M130 222 L172 80"/>
+            <path class="body-line" d="M160 74 L214 64" style="stroke-width:6"/>
+            <path class="body-line" d="M198 148 L238 252 L444 252 L498 196 L568 170 L572 134 L438 134 L404 150 L252 150 Z" style="fill:var(--surface);fill-opacity:.55"/>
+            <path class="body-line" d="M352 124 Q460 112 566 128"/>
+            <!-- jalur -->
+            <path class="pwr" d="M376 214 L402 200"/>
+            <path class="pwr" d="M458 196 L496 210"/>
+            <path class="pwr" d="M348 170 L402 182"/>
+            <path class="sig" d="M228 72 L246 100 L430 100 L430 168"/>
+            <path class="pwr" d="M648 252 L648 298 L318 298 L318 238"/>
+            <!-- baterai -->
+            <g class="hs" data-k="baterai" tabindex="0" role="button" aria-label="1 Baterai"><rect class="shape" x="262" y="186" width="114" height="52" rx="8"/><path d="M290 186v52M318 186v52M346 186v52" stroke="var(--line)" stroke-width="2"/><text class="lbl" x="319" y="266">Baterai</text><circle class="badge" cx="262" cy="186" r="13"/><text class="badge-t" x="262" y="191">1</text></g>
+            <!-- motor -->
+            <g class="hs" data-k="motor" tabindex="0" role="button" aria-label="2 Motor listrik BLDC"><circle class="shape" cx="520" cy="222" r="28"/><circle cx="520" cy="222" r="10" fill="none" stroke="var(--ink)" stroke-width="2"/><path d="M520 194v12M520 238v12M492 222h12M536 222h12" stroke="var(--ink)" stroke-width="2"/><text class="lbl" x="520" y="296" style="display:none">Motor</text><circle class="badge" cx="544" cy="198" r="13"/><text class="badge-t" x="544" y="203">2</text></g>
+            <!-- controller -->
+            <g class="hs" data-k="controller" tabindex="0" role="button" aria-label="3 Controller"><rect class="shape" x="402" y="168" width="58" height="42" rx="6"/><path d="M412 180h38M412 190h38M412 200h24" stroke="var(--muted)" stroke-width="2"/><circle class="badge" cx="402" cy="168" r="13"/><text class="badge-t" x="402" y="173">3</text></g>
+            <!-- throttle -->
+            <g class="hs" data-k="throttle" tabindex="0" role="button" aria-label="4 Throttle"><rect class="shape" x="208" y="52" width="40" height="18" rx="8"/><circle class="badge" cx="248" cy="52" r="13"/><text class="badge-t" x="248" y="57">4</text></g>
+            <!-- charger -->
+            <g class="hs" data-k="charger" tabindex="0" role="button" aria-label="5 Charger"><rect class="shape" x="612" y="206" width="82" height="46" rx="6"/><text class="lbl" x="653" y="233" style="font-size:12px">Charger</text><circle class="badge" cx="612" cy="206" r="13"/><text class="badge-t" x="612" y="211">5</text></g>
+            <!-- bms -->
+            <g class="hs" data-k="bms" tabindex="0" role="button" aria-label="6 BMS"><rect class="shape" x="302" y="158" width="46" height="24" rx="5"/><text class="lbl" x="325" y="175" style="font-size:11px">BMS</text><circle class="badge" cx="302" cy="158" r="13"/><text class="badge-t" x="302" y="163">6</text></g>
+            <text class="lbl" x="472" y="152" style="font-size:11px;fill:var(--muted)">Controller</text>
+            
+            <text class="lbl" x="520" y="262" style="font-size:11px;fill:var(--muted)">Motor BLDC</text>
+          </svg>
+        </div>
+        <div class="note" style="margin-top:8px"><span style="color:var(--volt);font-weight:700">- - -</span> jalur daya tegangan tinggi &nbsp; <span style="color:var(--teal);font-weight:700">· · ·</span> jalur sinyal. Diagram disederhanakan untuk belajar.</div>
+        <div class="listbtns" id="complist"></div>
+      </div>
+      <aside class="info" id="compinfo" aria-live="polite"></aside>
+    </div>
+    <div class="status" id="s2status"></div>
+  </div>
+  <div class="foot"><button class="btn ghost" data-next="1">Kembali</button><button class="btn" data-next="3">Lanjut ke Tahap 3</button></div>
+</section>
+
+<!-- TAHAP 3 -->
+<section class="panel" id="p3" data-stage="3" hidden>
+  <div class="kicker">Tahap 3 · Eksplorasi: alur daya</div>
+  <h2>Simulasi aliran energi</h2>
+  <p class="lead">Nyalakan kunci, putar gas, dan lihat daya mengalir dari baterai ke roda. Lalu hubungkan charger. Nilai pada simulasi adalah contoh sederhana, bukan data kendaraan tertentu.</p>
+  <div class="sec"><div class="sim">
+    <div class="diagram">
+      <svg viewBox="0 0 800 360" role="img" aria-label="Diagram alur daya: charger ke BMS ke baterai, baterai ke BMS ke controller ke motor ke roda">
+        <path class="flow sg" id="fl_thr" d="M400 140V190"/>
+        <path class="flow" id="fl_chg" d="M240 140V190"/>
+        <path class="flow" id="fl_bb" d="M140 250H180"/>
+        <path class="flow" id="fl_bc" d="M300 250H340"/>
+        <path class="flow" id="fl_cm" d="M460 250H500"/>
+        <path class="flow" id="fl_mw" d="M620 250H688"/>
+        <g class="node" id="n_chg"><rect x="180" y="24" width="120" height="116" rx="10"/><use href="#ic-charger" x="190" y="30" width="100" height="75"/><text x="240" y="126">Charger</text></g>
+        <g class="node" id="n_thr"><rect x="340" y="24" width="120" height="116" rx="10"/><use href="#ic-throttle" x="350" y="30" width="100" height="75"/><text x="400" y="126">Throttle</text></g>
+        <g class="node" id="n_bat"><rect x="20" y="190" width="120" height="126" rx="10"/><use href="#ic-baterai" x="30" y="196" width="100" height="75"/><text x="80" y="288">Baterai</text><text x="80" y="306" style="font:500 11px var(--f-mono)" id="t_v">0 V</text></g>
+        <g class="node" id="n_bms"><rect x="180" y="190" width="120" height="126" rx="10"/><use href="#ic-bms" x="190" y="196" width="100" height="75"/><text x="240" y="296">BMS</text></g>
+        <g class="node" id="n_ctl"><rect x="340" y="190" width="120" height="126" rx="10"/><use href="#ic-controller" x="350" y="196" width="100" height="75"/><text x="400" y="296">Controller</text></g>
+        <g class="node" id="n_mot"><rect x="500" y="190" width="120" height="126" rx="10"/><use href="#ic-motor" x="510" y="196" width="100" height="75"/><text x="560" y="296">Motor BLDC</text></g>
+        <g id="wheelg" transform="translate(728 250)"><circle r="40" fill="var(--surface)" stroke="var(--ink)" stroke-width="7"/><circle r="26" fill="none" stroke="var(--muted)" stroke-width="2"/><path d="M0 -26V26M-26 0H26M-18 -18L18 18M-18 18L18 -18" stroke="var(--ink)" stroke-width="2.5"/><circle r="6" fill="var(--ink)"/></g>
+        <text class="lbl" x="728" y="312" style="font-size:13px">Roda</text>
+        <text x="20" y="348" style="font:500 12px var(--f-mono);fill:var(--muted)">Daya keluar (oranye) · pengisian (hijau, arah berbalik) · sinyal (biru)</text>
+      </svg>
+    </div>
+    <div class="ctl">
+      <div class="sw"><b>Kunci kontak</b><button class="toggle" id="keyBtn" aria-pressed="false">OFF</button></div>
+      <div><label for="thr"><b>Throttle</b> <span class="status" id="thrv">0%</span></label><input type="range" id="thr" min="0" max="100" value="0" disabled></div>
+      <div class="sw"><b>Charger</b><button class="toggle" id="chgBtn" aria-pressed="false">Lepas</button></div>
+      <div class="read">
+        <div><small>Kecepatan</small><b id="r_spd">0</b> <span class="status">km/jam</span></div>
+        <div><small>Arus</small><b id="r_cur">0</b> <span class="status">A</span></div>
+        <div><small>Tegangan</small><b id="r_v">0</b> <span class="status">V</span></div>
+        <div><small>Daya</small><b id="r_p">0</b> <span class="status">W</span></div>
+      </div>
+      <div><div class="status" style="display:flex;justify-content:space-between"><span>Isi baterai (SOC)</span><span id="r_soc">80%</span></div><div class="soc"><i id="socbar"></i></div></div>
+      <div class="msg" id="simmsg" aria-live="polite"></div>
+    </div>
+  </div></div>
+  <div class="sec">
+    <h3>Misi simulasi</h3>
+    <ul class="tasks" id="simtasks">
+      <li data-t="key">Nyalakan kunci kontak</li>
+      <li data-t="thr">Putar throttle sampai 50% atau lebih dan lihat motor berputar</li>
+      <li data-t="drain">Biarkan isi baterai turun sampai 75% atau kurang</li>
+      <li data-t="chg">Hubungkan charger dan lihat isi baterai naik</li>
+    </ul>
+    <div class="row"><button class="btn ghost" id="resetSim" style="width:fit-content">Atur ulang simulasi (isi 80%)</button></div>
+    <div class="hint">Coba juga: habiskan baterai sampai sekitar 5%. BMS akan memutus beban untuk melindungi baterai dari pengosongan berlebih.</div>
+  </div>
+  <div class="foot"><button class="btn ghost" data-next="2">Kembali</button><button class="btn" data-next="4">Lanjut ke Tahap 4</button></div>
+</section>
+
+<!-- TAHAP 4 -->
+<section class="panel" id="p4" data-stage="4" hidden>
+  <div class="kicker">Tahap 4 · Praktik virtual</div>
+  <h2>Kerja aman, lalu rakit rangkaian</h2>
+  <p class="lead">Dua latihan. Pertama urutan kerja aman, karena sistem motor listrik bertegangan tinggi. Kedua menyambung diagram rangkaian. Keduanya selesai tanpa risiko apa pun.</p>
+
+  <div class="sec">
+    <h3>Latihan A · Urutkan langkah kerja aman</h3>
+    <p>Klik langkah sesuai urutan yang benar, dari yang pertama dilakukan.</p>
+    <ul class="sop" id="sop"></ul>
+    <div class="hint" id="sophint">Mulai dari langkah pertama.</div>
+    <p class="note">Ini urutan dasar untuk latihan. Di bengkel, selalu ikuti SOP pabrikan dan arahan guru atau instruktur.</p>
+  </div>
+
+  <div class="sec">
+    <h3>Latihan B · Rakit rangkaian</h3>
+    <p>Klik dua komponen untuk menyambungnya. Ada 5 sambungan yang benar: tiga jalur daya dan dua jalur lain (pengisian dan sinyal).</p>
+    <div class="diagram">
+      <svg viewBox="0 0 620 400" id="wsvg" role="group" aria-label="Rakit rangkaian">
+        <g id="wires"></g>
+        <g id="wnodes"></g>
+      </svg>
+    </div>
+    <div class="hint" id="wirehint">Pilih komponen pertama.</div>
+    <div><button class="btn ghost" id="wreset">Ulangi rangkaian</button></div>
+    <div class="status" id="s4status"></div>
+  </div>
+  <div class="foot"><button class="btn ghost" data-next="3">Kembali</button><button class="btn" data-next="5">Lanjut ke Tahap 5</button></div>
+</section>
+
+<!-- TAHAP 5 -->
+<section class="panel" id="p5" data-stage="5" hidden>
+  <div class="kicker">Tahap 5 · Presentasi</div>
+  <h2>Jelaskan dengan kata-katamu sendiri</h2>
+  <p class="lead">Mempresentasikan hasil belajar membuat pemahaman lebih kuat. Isi keempat catatan ini (minimal satu kalimat), lalu pakai sebagai bahan presentasi singkat 3 menit di depan kelas.</p>
+  <div class="sec fields">
+    <label class="f" for="n1"><span>1. Komponen mana yang paling menarik bagimu, dan kenapa? <small>(minimal 20 huruf)</small></span><textarea id="n1" data-n="n1"></textarea></label>
+    <label class="f" for="n2"><span>2. Ceritakan alur energi dari baterai sampai roda.</span><textarea id="n2" data-n="n2"></textarea></label>
+    <label class="f" for="n3"><span>3. Tulis satu aturan keselamatan dan alasannya.</span><textarea id="n3" data-n="n3"></textarea></label>
+    <label class="f" for="n4"><span>4. Apa perbedaan utama motor listrik dengan motor bensin?</span><textarea id="n4" data-n="n4"></textarea></label>
+  </div>
+  <div class="sec">
+    <div class="hint"><b>Urutan presentasi 3 menit:</b> (1) satu kalimat pembuka, (2) tunjukkan komponen di diagram, (3) jelaskan alur energi, (4) sebut aturan keselamatan, (5) jawab satu pertanyaan teman.</div>
+    <div style="display:flex;gap:10px;flex-wrap:wrap;align-items:center"><button class="btn volt" id="copyNotes">Salin ringkasan</button><span class="status" id="s5status"></span></div>
+  </div>
+  <div class="foot"><button class="btn ghost" data-next="4">Kembali</button><button class="btn" data-next="6">Lanjut ke Evaluasi</button></div>
+</section>
+
+<!-- TAHAP 6 -->
+<section class="panel" id="p6" data-stage="6" hidden>
+  <div class="kicker">Tahap 6 · Penutup dan evaluasi</div>
+  <h2>Uji pemahamanmu</h2>
+  <p class="lead">Evaluasi mencakup tiga aspek: pengetahuan (kuis), keterampilan (latihan praktik), dan sikap (penilaian diri).</p>
+  <div class="sec" id="quizArea"></div>
+  <div class="sec" id="reportArea" hidden></div>
+  <div class="foot"><button class="btn ghost" data-next="5">Kembali</button><span class="status" id="s6status"></span></div>
+</section>
+</main>
+</div>
+
+<footer class="bt">
+  <span>Disusun dari makalah “Media Pembelajaran Pengenalan Kendaraan Motor Listrik pada Siswa TKR” · Moses Munthe, Universitas Negeri Medan.</span>
+  <span class="acts"><button class="btn ghost" id="teacher" aria-pressed="false">Mode guru: buka semua tahap</button><button class="btn ghost" id="resetAll">Hapus progres</button></span>
+</footer>
+</div>
+<div class="toast" id="toast" role="status"></div>
+
+<script>
+(function(){
+"use strict";
+var $=function(s,r){return (r||document).querySelector(s)}, $$=function(s,r){return Array.prototype.slice.call((r||document).querySelectorAll(s))};
+var KEY="belajar-motor-listrik-v1";
+var S={name:"",kelas:"",started:false,cur:1,done:{},energy:[],comp:[],tasks:{},sop:0,wires:[],notes:{},qa:[],sikap:{},teacher:false};
+try{var raw=localStorage.getItem(KEY);if(raw){var o=JSON.parse(raw);for(var k in o)S[k]=o[k]}}catch(e){}
+function save(){try{localStorage.setItem(KEY,JSON.stringify(S))}catch(e){}}
+var toastT;function toast(t){var el=$("#toast");el.textContent=t;el.classList.add("show");clearTimeout(toastT);toastT=setTimeout(function(){el.classList.remove("show")},2600)}
+
+var STAGES=[
+ {t:"Pendahuluan",s:"Mengapa motor listrik",ph:"Pendahuluan"},
+ {t:"Eksplorasi",s:"Enam komponen utama",ph:"Inti"},
+ {t:"Alur daya",s:"Simulasi aliran energi",ph:""},
+ {t:"Praktik virtual",s:"Kerja aman dan rangkaian",ph:""},
+ {t:"Presentasi",s:"Jelaskan hasil belajarmu",ph:""},
+ {t:"Evaluasi",s:"Kuis dan penilaian diri",ph:"Penutup"}];
+function unlocked(n){return S.teacher||n===1||!!S.done[n-1]}
+function renderSteps(){
+  var nav=$("#steps");nav.innerHTML="";
+  STAGES.forEach(function(st,i){
+    var n=i+1;
+    if(st.ph){var p=document.createElement("div");p.className="phase";p.textContent=st.ph;nav.appendChild(p)}
+    var b=document.createElement("button");b.className="step"+(S.done[n]?" done":"")+(unlocked(n)?"":" locked");
+    if(S.cur===n)b.setAttribute("aria-current","step");
+    b.innerHTML='<span class="n">'+(S.done[n]?"✓":n)+'</span><span><b>'+st.t+'</b><small>'+(unlocked(n)?(S.done[n]?"Selesai":st.s):"Selesaikan tahap "+(n-1))+'</small></span>';
+    b.addEventListener("click",function(){go(n)});nav.appendChild(b)});
+  var c=Object.keys(S.done).filter(function(k){return S.done[k]}).length;
+  $("#ovtxt").textContent=c+" / 6 tahap";$("#ovbar").style.width=(c/6*100)+"%";
+  $$("[data-next]").forEach(function(b){var t=+b.dataset.next;if(t>(+b.closest("section").dataset.stage))b.disabled=!unlocked(t)});
+  $("#teacher").setAttribute("aria-pressed",S.teacher);
+}
+function esc(t){return String(t).replace(/[&<>"]/g,function(c){return{"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]})}
+function showCover(){
+  simStop();$("#cover").hidden=false;$("#app").hidden=true;$("#who").hidden=true;
+  $("#studentName").value=S.name||"";$("#studentClass").value=S.kelas||"";
+  $("#startBtn").textContent=S.started?"Lanjutkan belajar":"Mulai belajar";chkName();window.scrollTo({top:0});
+}
+function chkName(){var ok=$("#studentName").value.trim().length>=2;$("#startBtn").disabled=!ok;$("#startNote").textContent=ok?"Siap. Klik tombol untuk masuk.":"Isi nama (minimal 2 huruf) untuk memulai."}
+function begin(){
+  S.name=$("#studentName").value.trim();S.kelas=$("#studentClass").value.trim();S.started=true;save();
+  $("#cover").hidden=true;$("#app").hidden=false;$("#who").hidden=false;
+  $("#whoTxt").innerHTML="Siswa: <b>"+esc(S.name)+"</b>"+(S.kelas?" · "+esc(S.kelas):"");
+  go(unlocked(S.cur)?S.cur:1);
+}
+function go(n){
+  if(!unlocked(n)){toast("Selesaikan Tahap "+(n-1)+" dulu");return}
+  S.cur=n;save();$$("section.panel").forEach(function(p){p.hidden=(+p.dataset.stage!==n)});
+  renderSteps();window.scrollTo({top:0,behavior:"smooth"});
+  if(n===3)simStart();else simStop();
+  if(n===6)renderQuiz();
+}
+function markDone(n,silent){if(S.done[n])return;S.done[n]=true;save();renderSteps();if(!silent)toast("Tahap "+n+" selesai ✓")}
+$$("[data-next]").forEach(function(b){b.addEventListener("click",function(){go(+b.dataset.next)})});
+
+/* ---------- Tahap 1 ---------- */
+var ENERGI={
+ bensin:{n:"Bensin",c:["Bensin (energi kimia)","Pembakaran di ruang bakar menghasilkan panas","Piston dan poros engkol menjadi gerak putar","Transmisi menggerakkan roda"],t:"Banyak digunakan pada sepeda motor dan mobil. Memakai sistem bahan bakar, pengapian, dan knalpot."},
+ diesel:{n:"Diesel",c:["Solar (energi kimia)","Udara dikompresi tinggi lalu solar menyala sendiri","Piston dan poros engkol menjadi gerak putar","Transmisi menggerakkan roda"],t:"Tidak memakai busi. Penyalaan terjadi karena tekanan dan suhu kompresi."},
+ listrik:{n:"Listrik",c:["Baterai menyimpan energi listrik","Controller mengatur daya ke motor","Motor listrik mengubah listrik menjadi putaran","Roda berputar"],t:"Tanpa pembakaran di kendaraan. Itu sebabnya tidak ada knalpot dan suaranya lebih halus."},
+ hybrid:{n:"Hybrid",c:["Dua sumber energi: bensin dan baterai","Mesin bensin dan motor listrik bekerja bergantian atau bersamaan","Penggerak gabungan menyalurkan tenaga","Roda berputar"],t:"Menggabungkan keunggulan dua sistem. Pada banyak hybrid, sebagian energi pengereman dapat disimpan kembali ke baterai."}};
+function renderEnergy(sel){
+  var wrap=$("#energyChips");wrap.innerHTML="";
+  Object.keys(ENERGI).forEach(function(k){
+    var b=document.createElement("button");b.className="chip"+(S.energy.indexOf(k)>-1?" seen":"");b.textContent=ENERGI[k].n;b.setAttribute("aria-pressed",k===sel);
+    b.addEventListener("click",function(){if(S.energy.indexOf(k)<0)S.energy.push(k);save();renderEnergy(k);
+      if(S.energy.length===4)markDone(1)});
+    wrap.appendChild(b)});
+  var box=$("#energyBox");
+  if(!sel){box.innerHTML='<p class="note">Pilih salah satu jenis energi di atas.</p>'}
+  else{var d=ENERGI[sel];box.innerHTML='<h3>'+d.n+'</h3><ol class="chain" style="margin:12px 0">'+d.c.map(function(x){return"<li>"+x+"</li>"}).join("")+'</ol><p>'+d.t+'</p>'}
+  var st=$("#s1status");st.textContent=S.energy.length+" / 4 jenis energi dibuka";st.className="status"+(S.energy.length===4?" ok":"");
+  $("#f1").textContent=S.done[1]?"Tahap selesai":"Buka keempat jenis energi";
+}
+
+/* ---------- Tahap 2 ---------- */
+var KOMP={
+ baterai:{no:1,n:"Baterai",f:"Menyimpan energi listrik (arus searah) yang dipakai motor. Kapasitasnya dinyatakan dalam Ah atau kWh, tegangannya dalam Volt.",a:"Tangki bahan bakar",k:"Tegangan tinggi dan menyimpan energi besar. Jangan dibongkar, ditusuk, atau dihubung singkat."},
+ motor:{no:2,n:"Motor listrik (BLDC)",f:"Mengubah energi listrik menjadi putaran untuk menggerakkan roda. BLDC (brushless DC) tidak memakai sikat arang sehingga perawatannya lebih sedikit. Pada banyak sepeda motor listrik, motor dipasang di hub roda belakang.",a:"Mesin pembakaran",k:"Jangan menyentuh kabel fasa motor saat sistem masih terhubung ke baterai."},
+ controller:{no:3,n:"Controller",f:"Mengatur aliran daya dari baterai ke motor sesuai sinyal throttle. Dari sinilah kecepatan motor dikendalikan.",a:"Sistem injeksi dan ECU",k:"Bagian dalamnya dapat menyimpan muatan sesaat setelah baterai diputus."},
+ throttle:{no:4,n:"Throttle (gas elektronik)",f:"Sensor pada grip gas mengirim sinyal ke controller. Semakin besar putaran grip, semakin besar permintaan daya ke motor.",a:"Kabel gas dan pedal gas",k:"Termasuk jalur sinyal tegangan rendah, tetapi kerusakannya bisa membuat motor menarik tiba-tiba."},
+ charger:{no:5,n:"Charger",f:"Mengubah listrik dari jaringan rumah menjadi arus searah dengan tegangan yang sesuai baterai untuk mengisi ulang.",a:"Pengisian bahan bakar di SPBU",k:"Gunakan charger yang sesuai spesifikasi baterai. Kabel yang rusak tidak boleh dipakai."},
+ bms:{no:6,n:"BMS (Battery Management System)",f:"Memantau tegangan sel, arus, dan suhu baterai. Memutus beban atau pengisian saat kondisi berbahaya, misalnya pengisian berlebih, pengosongan berlebih, arus berlebih, atau suhu terlalu tinggi.",a:"Tidak ada padanan langsung pada kendaraan bensin",k:"BMS adalah pelindung baterai. Jangan dilewati (bypass) demi menambah tenaga."}};
+var PARTS={
+ baterai:"Terminal positif (merah) dan negatif (hitam), casing pelindung, sel-sel baterai di dalamnya, label tegangan dan kapasitas.",
+ motor:"Casing hub, magnet permanen, kumparan (stator), as roda, serta kabel fasa dan kabel sensor Hall.",
+ controller:"Casing aluminium bersirip pendingin, kabel baterai (merah dan hitam), tiga kabel fasa ke motor, konektor sinyal.",
+ throttle:"Grip karet yang diputar, rumah sensor, dan kabel tiga jalur (umumnya +5 V, sinyal, ground) ke controller.",
+ charger:"Colokan AC, bodi adaptor dengan lampu indikator, kabel dan konektor DC menuju baterai.",
+ bms:"Papan sirkuit, IC pemantau, transistor MOSFET pemutus arus, konektor kabel ke tiap sel, kabel B+ dan B−."};
+var KEYS=["baterai","motor","controller","throttle","charger","bms"];
+function showComp(k){
+  var d=KOMP[k];
+  if(S.comp.indexOf(k)<0){S.comp.push(k);save()}
+  $$(".hs").forEach(function(g){g.classList.toggle("sel",g.dataset.k===k);if(S.comp.indexOf(g.dataset.k)>-1)g.classList.add("seen")});
+  $$(".lb").forEach(function(b){b.setAttribute("aria-pressed",b.dataset.k===k);if(S.comp.indexOf(b.dataset.k)>-1)b.classList.add("seen")});
+  $("#compinfo").innerHTML='<svg class="big" viewBox="0 0 120 90" role="img" aria-label="Gambar '+d.n+'"><use href="#ic-'+k+'"/></svg><div class="tag">Komponen '+d.no+' dari 6</div><h3>'+d.n+'</h3><dl><div><dt>Bagian yang terlihat pada gambar</dt><dd>'+PARTS[k]+'</dd></div><div><dt>Fungsi</dt><dd>'+d.f+'</dd></div><div><dt>Padanan pada kendaraan bensin</dt><dd>'+d.a+'</dd></div><div><dt>Keselamatan</dt><dd>'+d.k+'</dd></div></dl>';
+  var st=$("#s2status");st.textContent=S.comp.length+" / 6 komponen dipelajari";st.className="status"+(S.comp.length===6?" ok":"");
+  if(S.comp.length===6)markDone(2);
+}
+function initComp(){
+  var l=$("#complist");KEYS.forEach(function(k){var b=document.createElement("button");b.className="lb"+(S.comp.indexOf(k)>-1?" seen":"");b.dataset.k=k;b.setAttribute("aria-pressed","false");b.innerHTML='<svg class="ico" viewBox="0 0 120 90" aria-hidden="true"><use href="#ic-'+k+'"/></svg><span class="nm"><i>'+KOMP[k].no+'</i>'+KOMP[k].n.split(" (")[0]+'</span>';b.addEventListener("click",function(){showComp(k)});l.appendChild(b)});
+  $$(".hs").forEach(function(g){g.addEventListener("click",function(){showComp(g.dataset.k)});g.addEventListener("keydown",function(e){if(e.key==="Enter"||e.key===" "){e.preventDefault();showComp(g.dataset.k)}});if(S.comp.indexOf(g.dataset.k)>-1)g.classList.add("seen")});
+  $("#compinfo").innerHTML='<div class="tag">Informasi komponen</div><p>Klik nomor pada gambar atau tombol di bawahnya untuk membaca fungsi, padanan, dan catatan keselamatan.</p>';
+  $("#s2status").textContent=S.comp.length+" / 6 komponen dipelajari";
+}
+
+/* ---------- Tahap 3: simulasi ---------- */
+var sim={key:false,thr:0,chg:false,soc:80,spd:0,cut:false,ang:0,run:false,timer:null,msg:"",full:false};
+function $s(id){return document.getElementById(id)}
+function simStart(){if(sim.timer)return;sim.timer=setInterval(simTick,100);updTasksUI()}
+function simStop(){clearInterval(sim.timer);sim.timer=null}
+function setFlow(id,on,rev,dur){var e=$s(id);e.classList.toggle("on",on);e.classList.toggle("rev",!!rev);if(on)e.style.setProperty("--dur",dur+"s")}
+function simTick(){
+  var dt=.1,eff=(sim.key&&!sim.chg&&!sim.cut)?sim.thr:0,I=0,msg="";
+  if(sim.chg){
+    I=-8;sim.soc+=2*dt;sim.spd*=.85;
+    if(sim.soc>=100){sim.soc=100;sim.chg=false;msg="BMS menghentikan pengisian karena baterai sudah penuh (proteksi pengisian berlebih).";$s("chgBtn").setAttribute("aria-pressed","false");$s("chgBtn").textContent="Lepas";I=0}
+    else msg="Pengisian berjalan. Daya mengalir dari charger lewat BMS ke baterai. Gas dikunci saat pengisian."
+    if(sim.soc>=10)sim.cut=false;
+  }else if(sim.key&&!sim.cut){
+    I=eff*.55;sim.spd+=(.6*eff-sim.spd)*.12;sim.soc-=(I/55*1.6+.02)*dt;
+    if(sim.soc<=5){sim.soc=5;sim.cut=true;msg="BMS memutus beban: baterai hampir habis (proteksi pengosongan berlebih). Hubungkan charger."}
+    else msg=eff>0?"Controller mengambil daya dari baterai sesuai posisi throttle, lalu menggerakkan motor.":"Kunci ON, throttle 0%. Controller siap, motor belum menarik daya besar."
+  }else{
+    sim.spd*=.92;
+    msg=sim.cut?"Beban diputus oleh BMS karena baterai hampir habis. Hubungkan charger.":"Kunci OFF. Tidak ada daya yang dikirim ke motor."
+  }
+  if(sim.spd<.2)sim.spd=0;
+  var V=39+.15*sim.soc+(sim.chg?2:-Math.abs(I)*.05),P=Math.abs(V*I);
+  $s("r_spd").textContent=sim.spd.toFixed(0);$s("r_cur").textContent=I.toFixed(0);$s("r_v").textContent=V.toFixed(1);$s("r_p").textContent=P.toFixed(0);
+  $s("t_v").textContent=V.toFixed(1)+" V";$s("r_soc").textContent=sim.soc.toFixed(0)+"%";
+  var bar=$s("socbar");bar.style.width=sim.soc+"%";bar.style.background=sim.soc<15?"var(--bad)":sim.soc<35?"var(--volt)":"var(--ok)";
+  var m=$s("simmsg");m.textContent=msg;m.classList.toggle("warn",sim.cut);
+  var dur=Math.max(.25,1.2-Math.abs(I)/55*.95);
+  setFlow("fl_bb",I!==0,sim.chg,dur);setFlow("fl_bc",I>0,false,dur);setFlow("fl_cm",I>0,false,dur);setFlow("fl_mw",sim.spd>1,false,dur);setFlow("fl_chg",sim.chg,true,dur);
+  $s("fl_chg").style.stroke="";$s("fl_thr").classList.toggle("on",eff>0);
+  $s("n_chg").classList.toggle("hot",sim.chg);$s("n_bms").classList.toggle("hot",sim.cut||sim.chg);$s("n_mot").classList.toggle("hot",sim.spd>1);$s("n_ctl").classList.toggle("hot",I>0);
+  sim.ang+=sim.spd*dt*14;$s("wheelg").setAttribute("transform","translate(728 250) rotate("+sim.ang.toFixed(1)+")");
+  var T=S.tasks,ch=false;
+  function t(k,c){if(c&&!T[k]){T[k]=1;ch=true}}
+  t("key",sim.key);t("thr",eff>=50&&sim.spd>5);t("drain",sim.soc<=75);t("chg",sim.chg&&sim.soc>sim.lastSoc);
+  sim.lastSoc=sim.soc;
+  if(ch){save();updTasksUI()}
+}
+function updTasksUI(){
+  var T=S.tasks,all=true;$$("#simtasks li").forEach(function(li){var ok=!!T[li.dataset.t];li.classList.toggle("ok",ok);if(!ok)all=false});
+  if(all)markDone(3);
+}
+function initSim(){
+  $s("keyBtn").addEventListener("click",function(){sim.key=!sim.key;this.setAttribute("aria-pressed",sim.key);this.textContent=sim.key?"ON":"OFF";syncThr()});
+  function syncThr(){var inp=$s("thr");inp.disabled=!sim.key||sim.chg;if(inp.disabled){inp.value=0;sim.thr=0;$s("thrv").textContent="0%"}}
+  $s("thr").addEventListener("input",function(){sim.thr=+this.value;$s("thrv").textContent=this.value+"%"});
+  $s("chgBtn").addEventListener("click",function(){
+    sim.chg=!sim.chg;this.setAttribute("aria-pressed",sim.chg);this.textContent=sim.chg?"Terhubung":"Lepas";
+    if(sim.chg&&sim.soc>=100){sim.soc=95}
+    syncThr()});
+  $s("resetSim").addEventListener("click",function(){sim.soc=80;sim.cut=false;sim.spd=0;sim.chg=false;sim.key=false;sim.thr=0;$s("keyBtn").setAttribute("aria-pressed","false");$s("keyBtn").textContent="OFF";$s("chgBtn").setAttribute("aria-pressed","false");$s("chgBtn").textContent="Lepas";syncThr()});
+  sim.lastSoc=sim.soc;
+}
+
+/* ---------- Tahap 4 ---------- */
+var SOP=["Matikan kunci kontak dan lepas kuncinya.","Kenakan APD: sarung tangan isolasi, kacamata pelindung, sepatu safety.","Putuskan sumber daya baterai (service plug atau MCB utama) dan lepas charger.","Pasang tanda peringatan “Sedang diperbaiki, tegangan tinggi”.","Ukur dengan voltmeter pada terminal untuk memastikan tegangan 0 V.","Baru mulai pekerjaan pada komponen."];
+var SOPWHY=["Kunci mati dan dilepas: tidak ada yang bisa menyalakan sistem secara tidak sengaja.","APD dipakai sebelum menyentuh bagian yang mungkin bertegangan.","Sumber daya harus benar-benar diputus, bukan hanya dimatikan lewat kunci.","Tanda peringatan mencegah orang lain menyalakan atau menyentuh kendaraan.","Ukur dulu, jangan menebak: tegangan sisa bisa tertinggal di controller.","Semua pengaman sudah terpenuhi, pekerjaan boleh dimulai."];
+var sopOrder=[];
+function renderSop(){
+  var ul=$("#sop");ul.innerHTML="";
+  if(!sopOrder.length){sopOrder=[3,0,5,2,4,1]}
+  sopOrder.forEach(function(idx){
+    var li=document.createElement("li"),b=document.createElement("button"),placed=idx<S.sop;
+    b.className=placed?"placed":"";b.innerHTML=(placed?'<span class="no">'+(idx+1)+'.</span>':'<span class="no" style="color:var(--muted)">·</span>')+SOP[idx];
+    b.addEventListener("click",function(){
+      if(idx<S.sop)return;
+      if(idx===S.sop){S.sop++;save();$("#sophint").textContent=SOPWHY[idx];renderSop();chk4()}
+      else{b.classList.add("shake");$("#sophint").textContent="Belum waktunya. Pikirkan: apa yang harus dilakukan lebih dulu agar langkah ini aman?";setTimeout(function(){b.classList.remove("shake")},400)}});
+    li.appendChild(b);ul.appendChild(li)});
+}
+var WN={charger:{n:"Charger",x:90,y:60},bms:{n:"BMS",x:90,y:200},baterai:{n:"Baterai",x:90,y:340},controller:{n:"Controller",x:310,y:200},throttle:{n:"Throttle",x:310,y:60},motor:{n:"Motor BLDC",x:530,y:200}};
+var WOK=[["charger","bms","s"],["bms","baterai"],["bms","controller"],["controller","motor"],["throttle","controller","s"]];
+var WMSG={"baterai|controller":"Pada diagram ini daya dari baterai melewati BMS lebih dulu, supaya baterai terlindungi.","baterai|charger":"Charger terhubung lewat BMS agar pengisian dibatasi saat baterai penuh.","motor|throttle":"Throttle hanya mengirim sinyal ke controller, bukan langsung ke motor.","bms|motor":"Motor mendapat daya dari controller, bukan langsung dari BMS.","charger|controller":"Charger mengisi baterai, tidak menyuplai controller.","charger|motor":"Charger mengisi baterai, tidak menyuplai motor.","baterai|motor":"Baterai tidak langsung ke motor. Controller yang mengatur dayanya.","baterai|throttle":"Throttle bukan jalur daya. Ia mengirim sinyal ke controller.","bms|throttle":"Throttle mengirim sinyal ke controller, bukan ke BMS."};
+var pick=null;
+function key2(a,b){return [a,b].sort().join("|")}
+function renderWire(){
+  var g=$("#wnodes");g.innerHTML="";var w=$("#wires");w.innerHTML="";
+  S.wires.forEach(function(p){var a=WN[p[0]],b=WN[p[1]],s=WOK.filter(function(o){return key2(o[0],o[1])===key2(p[0],p[1])})[0][2];
+    var l=document.createElementNS("http://www.w3.org/2000/svg","line");l.setAttribute("x1",a.x);l.setAttribute("y1",a.y);l.setAttribute("x2",b.x);l.setAttribute("y2",b.y);l.setAttribute("class","wire"+(s?" s":""));w.appendChild(l)});
+  Object.keys(WN).forEach(function(k){var n=WN[k],e=document.createElementNS("http://www.w3.org/2000/svg","g");e.setAttribute("class","wnode"+(pick===k?" pick":""));e.setAttribute("tabindex","0");e.setAttribute("role","button");e.setAttribute("aria-label",n.n);
+    e.innerHTML='<rect x="'+(n.x-65)+'" y="'+(n.y-56)+'" width="130" height="112" rx="10"/><use href="#ic-'+k+'" x="'+(n.x-50)+'" y="'+(n.y-52)+'" width="100" height="75"/><text x="'+n.x+'" y="'+(n.y+46)+'">'+n.n+'</text>';
+    function act(){wclick(k)}e.addEventListener("click",act);e.addEventListener("keydown",function(ev){if(ev.key==="Enter"||ev.key===" "){ev.preventDefault();act()}});g.appendChild(e)});
+  $("#s4status").textContent=S.wires.length+" / 5 sambungan benar";
+}
+function wclick(k){
+  if(!pick){pick=k;$("#wirehint").textContent="Pilih komponen kedua untuk disambung dengan "+WN[k].n+".";renderWire();return}
+  if(pick===k){pick=null;$("#wirehint").textContent="Pilih komponen pertama.";renderWire();return}
+  var kk=key2(pick,k),ok=WOK.filter(function(o){return key2(o[0],o[1])===kk})[0];
+  if(ok){var ex=S.wires.some(function(p){return key2(p[0],p[1])===kk});
+    if(!ex){S.wires.push([ok[0],ok[1]]);save();$("#wirehint").textContent="Benar: "+WN[ok[0]].n+" dan "+WN[ok[1]].n+" tersambung."}
+    else $("#wirehint").textContent="Sambungan itu sudah dibuat."}
+  else{$("#wirehint").textContent=WMSG[kk]||"Sambungan ini tidak ada pada diagram. Periksa lagi jalur daya dan jalur sinyal."}
+  pick=null;renderWire();chk4();
+}
+function chk4(){var a=S.sop>=SOP.length,b=S.wires.length>=5;
+  var st=$("#s4status");st.textContent=S.wires.length+" / 5 sambungan benar · Latihan A: "+(a?"selesai":"belum selesai");st.className="status"+(a&&b?" ok":"");
+  if(a&&b)markDone(4)}
+/* ---------- Tahap 5 ---------- */
+function chk5(){
+  var ok=["n1","n2","n3","n4"].every(function(k){return (S.notes[k]||"").trim().length>=20});
+  var st=$("#s5status");st.textContent=ok?"Semua catatan terisi":"Isi keempat catatan (minimal 20 huruf per kolom)";st.className="status"+(ok?" ok":"");
+  if(ok)markDone(5)}
+function initNotes(){
+  $$("textarea[data-n]").forEach(function(t){t.value=S.notes[t.dataset.n]||"";t.addEventListener("input",function(){S.notes[t.dataset.n]=t.value;save();chk5()})});
+  $("#copyNotes").addEventListener("click",function(){
+    var tx="Ringkasan belajar motor listrik\nNama: "+(S.name||"-")+(S.kelas?" ("+S.kelas+")":"")+"\n\n1. Komponen menarik: "+(S.notes.n1||"-")+"\n2. Alur energi: "+(S.notes.n2||"-")+"\n3. Aturan keselamatan: "+(S.notes.n3||"-")+"\n4. Beda dengan motor bensin: "+(S.notes.n4||"-");
+    function fb(){var ta=document.createElement("textarea");ta.value=tx;document.body.appendChild(ta);ta.select();try{document.execCommand("copy");toast("Ringkasan disalin")}catch(e){toast("Salin manual dari kolom di atas")}document.body.removeChild(ta)}
+    if(navigator.clipboard&&navigator.clipboard.writeText){navigator.clipboard.writeText(tx).then(function(){toast("Ringkasan disalin")},fb)}else fb()});
+  chk5();
+}
+/* ---------- Tahap 6 ---------- */
+var QZ=[
+ {q:"Komponen yang berfungsi menyimpan energi listrik pada motor listrik adalah…",o:["Controller","Baterai","Throttle","Charger"],a:1,e:"Baterai menyimpan energi, seperti tangki pada kendaraan bensin."},
+ {q:"Jenis motor listrik yang umum dipakai sebagai penggerak roda pada sepeda motor listrik adalah…",o:["Motor starter","Motor wiper","Motor BLDC","Dinamo sepeda"],a:2,e:"BLDC (brushless DC) tanpa sikat arang, perawatannya lebih sedikit."},
+ {q:"Komponen yang mengatur aliran daya dari baterai ke motor adalah…",o:["Controller","Busi","Charger","Speedometer"],a:0,e:"Controller membaca sinyal throttle lalu mengatur daya ke motor."},
+ {q:"Fungsi utama BMS adalah…",o:["Menaikkan kecepatan motor","Mengubah AC menjadi DC","Menjaga keamanan baterai","Menyalakan lampu"],a:2,e:"BMS memantau tegangan, arus, dan suhu, lalu memutus bila berbahaya."},
+ {q:"Pada motor listrik, throttle (gas elektronik) berfungsi…",o:["Mengirim sinyal permintaan daya ke controller","Menyimpan energi","Mengisi baterai","Mendinginkan motor"],a:0,e:"Semakin besar putaran grip, semakin besar permintaan daya."},
+ {q:"Padanan baterai pada kendaraan bensin adalah…",o:["Knalpot","Busi","Radiator","Tangki bahan bakar"],a:3,e:"Keduanya sama-sama menyimpan energi untuk menggerakkan kendaraan."},
+ {q:"Langkah paling awal sebelum bekerja pada sistem tegangan tinggi motor listrik adalah…",o:["Langsung membuka konektor","Mematikan kunci dan memutus sumber daya dengan aman","Menyentuh terminal untuk mengecek","Mengisi baterai sampai penuh"],a:1,e:"Matikan dan putuskan sumber daya, pakai APD, lalu ukur untuk memastikan 0 V."},
+ {q:"Dalam simulasi, mengapa BMS memutus beban saat isi baterai hampir habis?",o:["Supaya kendaraan lebih cepat","Melindungi baterai dari pengosongan berlebih","Supaya charger tidak dipakai","Karena motor rusak"],a:1,e:"Pengosongan berlebih dapat merusak sel baterai."}];
+function renderQuiz(){
+  var area=$("#quizArea"),rep=$("#reportArea");
+  var idx=S.qa.length;
+  if(idx>=QZ.length){area.hidden=true;showReport();return}
+  area.hidden=false;rep.hidden=false;
+  var q=QZ[idx];
+  area.innerHTML='<div class="qmeta">Pertanyaan '+(idx+1)+' dari '+QZ.length+'</div><h3 style="font-size:1.5rem">'+q.q+'</h3><div class="q-opts"></div><div class="hint" id="qexp" hidden></div><div><button class="btn" id="qnext" hidden>'+(idx===QZ.length-1?"Lihat hasil":"Pertanyaan berikutnya")+'</button></div>';
+  var box=$(".q-opts",area);
+  q.o.forEach(function(t,i){var b=document.createElement("button");b.className="opt";b.textContent=t;
+    b.addEventListener("click",function(){
+      $$(".opt",area).forEach(function(x,j){x.disabled=true;if(j===q.a)x.classList.add("right")});
+      if(i!==q.a)b.classList.add("wrong");
+      S.qa.push(i);save();var e=$("#qexp");e.hidden=false;e.textContent=(i===q.a?"Benar. ":"Belum tepat. ")+q.e;$("#qnext").hidden=false});
+    box.appendChild(b)});
+  $("#qnext").addEventListener("click",function(){renderQuiz()});
+  rep.hidden=true;
+}
+var SIK=["Saya jujur dalam mengerjakan latihan dan kuis.","Saya bertanggung jawab menyelesaikan setiap tahap.","Saya bekerja sama dan membantu teman ketika berdiskusi."];
+function showReport(){
+  var rep=$("#reportArea");rep.hidden=false;
+  var sc=S.qa.filter(function(a,i){return a===QZ[i].a}).length,pct=Math.round(sc/QZ.length*100);
+  var cat=pct>=80?"Sangat baik":pct>=60?"Baik":"Perlu mengulang materi";
+  var skill=(S.done[3]?1:0)+(S.done[4]?1:0);
+  var sv=SIK.map(function(_,i){return S.sikap[i]||0}),sf=sv.filter(Boolean).length,sa=sf?(sv.reduce(function(a,b){return a+b},0)/sf).toFixed(1):"-";
+  rep.innerHTML='<div class="qmeta">Hasil belajar</div><h3 style="font-size:1.7rem;margin-bottom:12px">'+esc(S.name||"Siswa")+(S.kelas?" · "+esc(S.kelas):"")+'</h3><div class="cols">'+
+   '<div class="box"><div class="qmeta">Pengetahuan (kuis)</div><div class="score">'+pct+'</div><p>'+sc+' dari '+QZ.length+' benar · <b>'+cat+'</b></p><button class="btn ghost" id="retry" style="margin-top:10px">Ulangi kuis</button></div>'+
+   '<div class="box"><div class="qmeta">Keterampilan (praktik)</div><div class="score">'+skill+'<span style="font-size:2rem;color:var(--muted)"> / 2</span></div><p>Simulasi alur daya: <b>'+(S.done[3]?"selesai":"belum")+'</b><br>Praktik virtual: <b>'+(S.done[4]?"selesai":"belum")+'</b></p></div>'+
+   '<div class="box"><div class="qmeta">Sikap (penilaian diri, skala 1–4)</div><div class="score">'+sa+'</div><p>Isi tiga pernyataan di bawah.</p></div></div>'+
+   '<div class="sec"><h3>Penilaian diri</h3>'+SIK.map(function(t,i){return '<div><p>'+t+'</p><div class="rate" role="group" aria-label="'+t+'">'+[1,2,3,4].map(function(n){return '<button data-i="'+i+'" data-v="'+n+'" aria-pressed="'+(S.sikap[i]===n)+'">'+n+'</button>'}).join("")+'</div></div>'}).join("")+'<p class="note">1 = belum pernah, 4 = selalu.</p></div>'+
+   (pct>=60?'<div class="hint"><b>Selamat, '+esc(S.name||'siswa')+'!</b> Kamu sudah mengenal komponen dan cara kerja motor listrik. Lanjutkan dengan praktik langsung bersama guru di bengkel.</div>':'<div class="hint">Skor kuis masih rendah. Buka kembali Tahap 2 dan Tahap 3, lalu coba kuis lagi.</div>');
+  $$(".rate button",rep).forEach(function(b){b.addEventListener("click",function(){S.sikap[b.dataset.i]=+b.dataset.v;save();showReport()})});
+  $("#retry").addEventListener("click",function(){S.qa=[];save();rep.hidden=true;renderQuiz()});
+  $("#s6status").textContent="Evaluasi selesai";$("#s6status").className="status ok";
+  markDone(6);
+}
+/* ---------- umum ---------- */
+$("#teacher").addEventListener("click",function(){S.teacher=!S.teacher;save();renderSteps();toast(S.teacher?"Mode guru aktif: semua tahap terbuka":"Mode guru nonaktif")});
+$("#resetAll").addEventListener("click",function(){
+  var b=this;if(!b.dataset.sure){b.dataset.sure=1;b.textContent="Klik lagi untuk menghapus";setTimeout(function(){delete b.dataset.sure;b.textContent="Hapus progres"},3000);return}
+  try{localStorage.removeItem(KEY)}catch(e){}location.reload()});
+$("#wreset").addEventListener("click",function(){S.wires=[];pick=null;save();$("#wirehint").textContent="Pilih komponen pertama.";renderWire()});
+initComp();initSim();initNotes();renderSop();renderWire();renderEnergy(null);chk4();
+if(S.comp.length)showComp(S.comp[S.comp.length-1]);
+$("#studentName").addEventListener("input",chkName);
+$("#startForm").addEventListener("submit",function(e){e.preventDefault();if(!$("#startBtn").disabled)begin()});
+$("#toCover").addEventListener("click",showCover);
+renderSteps();
+if(S.started&&S.name)begin();else showCover();
+updTasksUI();
+})();
+</script>
+
+</body></html>
